@@ -1,6 +1,6 @@
 ---
 - name: Playbook to free up memory on Linux servers
-  hosts: 192.168.29.175
+  hosts: client
   gather_facts: yes
   become: true
 
