@@ -1,6 +1,6 @@
 ---
 - name: Playbook to free up memory on Linux servers
-  hosts: client
+  hosts: all
   gather_facts: yes
   become: true
 
