@@ -1,6 +1,6 @@
 ---
 - name: Troubleshoot Unresponsive Linux Server
-  hosts: your_unresponsive_server
+  hosts: client
   gather_facts: true
   tasks:
     - name: Check Network Connectivity
