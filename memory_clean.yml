@@ -1,0 +1,39 @@
+---
+- name: Playbook to free up memory on Linux servers
+  hosts: client
+  gather_facts: yes
+  become: true
+
+  tasks:
+    - name: Check memory usage & Buffer Cache
+      shell: free -m | awk 'NR==2 {print $3,$6}'
+      register: used_memory
+
+    - name: Print current memory usage
+      debug:
+        msg: "Current memory usage: {{ used_memory.stdout }} MB"
+
+    - name: Clear page cache
+      shell: echo 1 > /proc/sys/vm/drop_caches
+      #when: used_memory.stdout | int > 2000
+      # The condition above checks if the used memory is greater than 2000 MB.
+      # You can adjust this threshold based on your specific needs.
+
+    - name: Clear dentries and inodes
+      shell: echo 2 > /proc/sys/vm/drop_caches
+      #when: used_memory.stdout | int > 2000
+
+    - name: Clear buffer cache
+      shell: sync && echo 3 > /proc/sys/vm/drop_caches
+      become: true
+      register: buffer_memory
+   
+    - name: Print new memory usage after clearing cache
+      shell: free -m | awk 'NR==2 {print $3,$6}'
+      register: new_used_memory
+
+    - name: Print the difference in memory usage
+      debug:
+      #  msg: "Memory freed: {{ (used_memory.stdout | int) - (new_used_memory.stdout | int) }} MB"
+        msg: "Memory freed: {{ (new_used_memory.stdout) }} MB"
+
