@@ -13,11 +13,11 @@
     - name: Copy the script to the remote host
       copy:
         src: https://github.com/premkumargunasekar/Ansible.git
-        dest: /tmp/clear_memory.sh
+        dest: https://github.com/premkumargunasekar/Ansible.git/to/tmp/clear_memory.sh
         mode: '0755'  # Make sure the script is executable
 
     - name: Execute the script
-      shell: /tmp/clear_memory.sh
+      shell: https://github.com/premkumargunasekar/Ansible.git/to/tmp/clear_memory.sh
 
     - name: Print current memory usage after clearing cache
       shell: free -h
