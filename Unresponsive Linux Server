@@ -1,0 +1,41 @@
+---
+- name: Troubleshoot Unresponsive Linux Server
+  hosts: your_unresponsive_server
+  gather_facts: true
+  tasks:
+    - name: Check Network Connectivity
+      shell: ping -c 4 google.com
+      register: network_ping
+      ignore_errors: yes
+
+    - name: Check SSH Access
+      shell: ssh -o ConnectTimeout=10 {{ inventory_hostname }} exit
+      register: ssh_access
+      ignore_errors: yes
+
+    - name: Check System Load
+      shell: uptime
+      register: system_load
+
+    - name: Check Disk Space
+      shell: df -h
+      register: disk_space
+
+    - name: Check Running Processes
+      shell: ps aux
+      register: running_processes
+
+    - name: Display System Logs
+      shell: tail -n 20 /var/log/syslog
+      register: system_logs
+
+    - name: Debug Information
+      debug:
+        var: item.stdout
+      with_items:
+        - "{{ network_ping }}"
+        - "{{ ssh_access }}"
+        - "{{ system_load }}"
+        - "{{ disk_space }}"
+        - "{{ running_processes }}"
+        - "{{ system_logs }}"
