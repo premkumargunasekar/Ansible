@@ -1,0 +1,22 @@
+---
+- name: Update ServiceNow Incident with Memory Issue
+  hosts: client
+  tasks:
+    - name: Gather Memory Issue Information
+      command: free -m | awk 'NR==2 {print $3,$6}'
+      register: memory_issue_output
+
+    - name: Update ServiceNow Incident
+      uri:
+        url: "https://dev105669.service-now.com/api/now/table/incident/2c8e147d97bc31104e55fb000153afbf"
+        method: PATCH
+        user: {{username}}
+        password: {{password}}
+        return_content: yes
+        headers:
+          Content-Type: application/json
+        validate_certs: no
+        force_basic_auth: yes
+        body_format: json
+        body:
+          comments: "Memory Issue: {{ memory_issue_output.stdout }} on {{ansible_hostname}}"
